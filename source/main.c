@@ -86,6 +86,8 @@ GXRModeObj *vmode = NULL;
 u32 *xfb[2] = { NULL, NULL };
 int options_map[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
 
+const bool allowIgnoreError = true;
+
 enum {
 	MSG_SETFILE,
 	MSG_WRITE,
@@ -1244,6 +1246,20 @@ int dump_game(int disc_type, int type, int fs) {
 			ret = DVD_LowRead64Datel(wmsg->data, (u32)opt_read_size, (u64)startLBA << 11, isKnownDatel);
 		else
 			ret = DVD_LowRead64(wmsg->data, (u32)opt_read_size, (u64)startLBA << 11);
+		if (allowIgnoreError && ret != 0) {
+			// We failed, but we don't care
+		    DrawFrameStart();
+		    DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+		    sprintf(txtbuffer, "Read error at LBA %08X!", startLBA);
+		    WriteCentre(255, txtbuffer);
+		    DrawFrameFinish();
+		
+		    sleep(5);
+		    print_gecko("Read error at LBA %08X, continuing...\r\n", startLBA);
+
+			memset(wmsg->data, 0, opt_read_size);
+		    ret = 0;
+		}
 		MQ_Send(msgq, (mqmsg_t)wmsg, MQ_MSG_BLOCK);
 		if(calcChecksums) {
 			// Calculate MD5
