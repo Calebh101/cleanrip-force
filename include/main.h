@@ -50,7 +50,7 @@
 #define HW_ARMIRQMASK 	(HW_REG_BASE + 0x03c)
 #define HW_ARMIRQFLAG 	(HW_REG_BASE + 0x038)
 
-#define MAX_WII_OPTIONS 3
+#define MAX_WII_OPTIONS 4
 #define MAX_NGC_OPTIONS 3
 
 // Version info
@@ -86,7 +86,8 @@ enum options
 	NGC_ALIGN_BOUNDARY,
 	WII_DUAL_LAYER,
 	WII_CHUNK_SIZE,
-	WII_NEWFILE
+	WII_NEWFILE,
+  WII_STOP_ON_ERROR
 };
 
 enum shrinkOptions
@@ -143,6 +144,12 @@ enum settingsAskStatus
 	ANSWER_YES,
 	ANSWER_NO
 };
+
+enum stopOnErrorStatus
+{
+  WII_STOP_ON_ERROR_YES,
+  WII_STOP_ON_ERROR_NO
+}
 
 #endif
 

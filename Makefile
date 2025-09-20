@@ -7,7 +7,34 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-include $(DEVKITPRO)/libogc2/wii_rules
+include $(DEVKITPPC)/base_rules
+
+PORTLIBS        :=      $(PORTLIBS_PATH)/wii $(PORTLIBS_PATH)/ppc
+
+export PATH     :=      $(PORTLIBS_PATH)/wii/bin:$(PORTLIBS_PATH)/ppc/bin:$(PATH)
+
+export  LIBOGC_INC      :=      $(DEVKITPRO)/libogc/include
+export  LIBOGC_INC_2    :=      $(DEVKITPRO)/libogc2/include
+export  LIBOGC_LIB      :=      $(DEVKITPRO)/libogc2/lib/wii
+export	PORTLIBS_INC	:=		${DEVKITPRO}/portlibs/ppc/include
+
+MACHDEP =  -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float
+
+
+#---------------------------------------------------------------------------------
+%.dol: %.elf
+		$(SILENTMSG) output ... $(notdir $@)
+	$(SILENTCMD)elf2dol $< $@
+
+#---------------------------------------------------------------------------------
+%.tpl : %.scf
+	$(SILENTMSG) $(notdir $<)
+	$(SILENTCMD)gxtexconv -s $< -d $(DEPSDIR)/$*.d -o $@
+
+#---------------------------------------------------------------------------------
+%.elf:
+	$(SILENTMSG) linking ... $(notdir $@)
+	$(SILENTCMD)$(LD)  $^ $(LDFLAGS) $(LIBPATHS) $(LIBS) -o $@
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output
@@ -89,7 +116,8 @@ export HFILES := $(addsuffix .h,$(subst .,_,$(BINFILES))) $(addsuffix .h,$(subst
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD) \
-					-I$(LIBOGC_INC)
+					-I$(LIBOGC_INC_2) \
+					-I$(PORTLIBS_INC)
 
 #---------------------------------------------------------------------------------
 # build a list of library paths
