@@ -21,7 +21,16 @@
 #ifndef VERIFY_H
 #define VERIFY_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 extern int net_initialized;
+
+#ifdef __cplusplus
+}
+#endif
 
 void verify_init(char *mountPath);
 int verify_findMD5Sum(const char * md5, int disc_type);

@@ -1262,8 +1262,10 @@ int dump_game(int disc_type, int type, int fs) {
 		    sprintf(txtbuffer, "Read error at LBA %08X!", startLBA);
 		    WriteCentre(255, txtbuffer);
 		    DrawFrameFinish();
-		
-		    sleep(5);
+
+			WriteCentre(315, "Press  A to continue  B to exit");
+			u64 waitTimeStart = gettime();
+			wait_press_A_exit_B();
 		    print_gecko("Read error at LBA %08X, continuing...\r\n", startLBA);
 
 			memset(wmsg->data, 0, opt_read_size);

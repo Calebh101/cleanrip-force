@@ -149,7 +149,7 @@ enum stopOnErrorStatus
 {
   WII_STOP_ON_ERROR_YES,
   WII_STOP_ON_ERROR_NO
-}
+};
 
 #endif
 

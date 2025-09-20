@@ -13,10 +13,13 @@ PORTLIBS        :=      $(PORTLIBS_PATH)/wii $(PORTLIBS_PATH)/ppc
 
 export PATH     :=      $(PORTLIBS_PATH)/wii/bin:$(PORTLIBS_PATH)/ppc/bin:$(PATH)
 
-export  LIBOGC_INC      :=      $(DEVKITPRO)/libogc/include
+export  LIBOGC_INC      :=      $(DEVKITPRO)/libogc-min/include
 export  LIBOGC_INC_2    :=      $(DEVKITPRO)/libogc2/include
-export  LIBOGC_LIB      :=      $(DEVKITPRO)/libogc2/lib/wii
+export  LIBOGC_LIB      :=      $(DEVKITPRO)/libogc/lib/wii
+export  LIBOGC_LIB_2    :=      $(DEVKITPRO)/libogc2/lib/wii
 export	PORTLIBS_INC	:=		${DEVKITPRO}/portlibs/ppc/include
+export	LIBNTFS_INC		:=		${DEVKITPRO}/libntfs/include
+export	LIBNTFS_LIB		:=		${DEVKITPRO}/libntfs/lib
 
 MACHDEP =  -DGEKKO -mrvl -mcpu=750 -meabi -mhard-float
 
@@ -117,12 +120,13 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD) \
 					-I$(LIBOGC_INC_2) \
-					-I$(PORTLIBS_INC)
+					-I$(PORTLIBS_INC) \
+					-I$(LIBNTFS_INC)
 
 #---------------------------------------------------------------------------------
 # build a list of library paths
 #---------------------------------------------------------------------------------
-export LIBPATHS	:=	-L$(LIBOGC_LIB) $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
+export LIBPATHS	:=	-L$(LIBOGC_LIB_2) $(foreach dir,$(LIBDIRS),-L$(dir)/lib) -L$(LIBNTFS_LIB)
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
 .PHONY: $(BUILD) clean
