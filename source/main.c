@@ -84,9 +84,7 @@ int verify_in_use = 0;
 int verify_disc_type = 0;
 GXRModeObj *vmode = NULL;
 u32 *xfb[2] = { NULL, NULL };
-int options_map[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-const bool allowIgnoreError = true;
+int options_map[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 enum {
 	MSG_SETFILE,
@@ -846,6 +844,15 @@ char *getChunkSizeOption() {
 	return 0;
 }
 
+char *getStopOnErrorOption() {
+	int opt = options_map[WII_STOP_ON_ERROR];
+	if (opt == WII_STOP_ON_ERROR_YES)
+		return "Yes";
+	else if (opt == WII_STOP_ON_ERROR_NO)
+		return "No";
+	return 0;
+}
+
 int getMaxPos(int option_pos) {
 	switch (option_pos) {
 	case WII_DUAL_LAYER:
@@ -906,6 +913,8 @@ static void get_settings(int disc_type) {
 			DrawSelectableButton(vmode->fbWidth - 220, 160 + (32 * 2), -1, 160 + (32 * 2) + 30, getChunkSizeOption(), (currentSettingPos == 1) ? B_SELECTED : B_NOSELECT, -1);
 			WriteFont(80, 160 + (32 * 3), "New device per chunk");
 			DrawSelectableButton(vmode->fbWidth - 220, 160 + (32 * 3), -1, 160 + (32 * 3) + 30, getNewFileOption(), (currentSettingPos == 2) ? B_SELECTED : B_NOSELECT, -1);
+			WriteFont(80, 160 + (32 * 3), "Exit on error");
+			DrawSelectableButton(vmode->fbWidth - 220, 160 + (32 * 3), -1, 160 + (32 * 4) + 30, getStopOnErrorOption(), (currentSettingPos == 3) ? B_SELECTED : B_NOSELECT, -1);
 		}
 		WriteCentre(370,"Press  A  to continue");
 		DrawAButton(265,360);
@@ -1246,7 +1255,7 @@ int dump_game(int disc_type, int type, int fs) {
 			ret = DVD_LowRead64Datel(wmsg->data, (u32)opt_read_size, (u64)startLBA << 11, isKnownDatel);
 		else
 			ret = DVD_LowRead64(wmsg->data, (u32)opt_read_size, (u64)startLBA << 11);
-		if (allowIgnoreError && ret != 0) {
+		if (getStopOnErrorOption() && ret != 0) {
 			// We failed, but we don't care
 		    DrawFrameStart();
 		    DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
