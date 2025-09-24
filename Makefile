@@ -7,7 +7,7 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-include $(DEVKITPPC)/base_rules
+include $(DEVKITPRO)/libogc2/wii_rules
 
 PORTLIBS        :=      $(PORTLIBS_PATH)/wii $(PORTLIBS_PATH)/ppc
 
@@ -56,7 +56,7 @@ TEXTURES	:=	images
 # options for code generation
 #---------------------------------------------------------------------------------
 
-CFLAGS		= -g -O2 -Wall $(MACHDEP) $(INCLUDE)
+CFLAGS		= -g -O0 -O2 -Wall $(MACHDEP) $(INCLUDE)
 CXXFLAGS	= $(CFLAGS)
 
 LDFLAGS		= -g $(MACHDEP) -Wl,-Map,$(notdir $@).map

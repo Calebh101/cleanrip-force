@@ -85,6 +85,7 @@ int verify_disc_type = 0;
 GXRModeObj *vmode = NULL;
 u32 *xfb[2] = { NULL, NULL };
 int options_map[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+bool ignoreAHBPROT = true;
 
 enum {
 	MSG_SETFILE,
@@ -383,7 +384,7 @@ static int FindIOS(u32 ios) {
 
 /* check for AHBPROT & IOS58 */
 static void hardware_checks() {
-	if (!have_hw_access()) {
+	if (!have_hw_access() && ignoreAHBPROT == false) {
 		DrawFrameStart();
 		DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
 		WriteCentre(190, "AHBPROT check failed");
@@ -540,10 +541,22 @@ static int initialise_device(int type, int fs) {
 	WriteCentre(315, "Press  A to continue  B to exit");
 	wait_press_A_exit_B();
 
+	DrawFrameStart();
+	DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+	WriteCentre(255, "0.0");
+	sleep(1);
+
 	if (fs == TYPE_FAT) {
 		switch (type) {
 			case TYPE_SD:
+				DrawFrameStart();
+				DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+				WriteCentre(255, "0.1.1");
+				sleep(1);
 				ret = fatMountSimple("fat", sdcard);
+				DrawEmptyBox(30, 180, vmode->fbWidth - 38, 350, COLOR_BLACK);
+				WriteCentre(255, "0.1.2");
+				sleep(1);
 				break;
 #ifdef HW_DOL
 			case TYPE_M2LOADER:
